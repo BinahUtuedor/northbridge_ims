@@ -1,0 +1,15 @@
+version: 2
+
+sources:
+  - name: northbridge_raw
+    database: NORTHBRIDGE_IMS
+    schema: RAW
+    tables:
+      - name: tickets
+      - name: clients
+      - name: agents
+      - name: sla_definitions
+      - name: priority_levels
+      - name: ticket_categories
+      - name: escalation_log
+      - name: ticket_audit_log
