@@ -1,0 +1,87 @@
+version: 2
+
+models:
+
+  - name: stg_agents
+    columns:
+      - name: agent_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_clients
+    columns:
+      - name: client_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_priority_levels
+    columns:
+      - name: priority_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_ticket_categories
+    columns:
+      - name: category_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_sla_definitions
+    columns:
+      - name: sla_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_escalation_log
+    columns:
+      - name: escalation_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_ticket_audit_log
+    columns:
+      - name: log_id
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_tickets
+    columns:
+      - name: ticket_id
+        tests:
+          - unique
+          - not_null
+
+      - name: client_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_clients')
+                field: client_id
+
+      - name: assigned_agent_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_agents')
+                field: agent_id
+
+      - name: category_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_ticket_categories')
+                field: category_id
+
+      - name: priority_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_priority_levels')
+                field: priority_id
