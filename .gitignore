@@ -1,0 +1,49 @@
+
+# ----------------------------
+# ENV / SECRETS
+# ----------------------------
+.env
+*.env
+
+# ----------------------------
+# PYTHON
+# ----------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# ----------------------------
+# LOCAL DATA FILES (IMPORTANT FOR YOU)
+# ----------------------------
+data/
+clean_*.csv
+*.csv
+
+# If you ONLY want to ignore temporary files but still track raw templates,
+# remove the line above and be more specific.
+
+# ----------------------------
+# S3 / EXPORTS / LOGS
+# ----------------------------
+*.log
+logs/
+
+# ----------------------------
+# JUPYTER NOTEBOOKS (if used later)
+# ----------------------------
+.ipynb_checkpoints/
+
+# ----------------------------
+# DBT (very important)
+# ----------------------------
+target/
+dbt_packages/
+logs/
+
+# ----------------------------
+# AIRBYTE (if running locally later)
+# ----------------------------
+.airbyte/
