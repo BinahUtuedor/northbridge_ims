@@ -1,18 +1,29 @@
 -- ============================================================================
 -- STAGING: Escalation Log
--- Fixes timestamp + column naming issues
 -- ============================================================================
 
-select
-    escalationid                          as escalation_id,
-    ticketid                              as ticket_id,
-    escalatedfrom                         as escalated_from,
-    escalatedto                           as escalated_to,
-    trim(escalationreason)                as escalation_reason,
+{{ config(materialized='view') }}
 
-    -- FIX: convert string timestamp safely
-    try_to_timestamp_ntz(escalatedat, 'DD/MM/YYYY HH24:MI') as escalated_at,
+SELECT
+    escalationid                          AS escalation_id,
+    ticketid                              AS ticket_id,
+    escalatedfrom                         AS escalated_from,
+    escalatedto                           AS escalated_to,
+    trim(escalationreason)                AS escalation_reason,
 
-    {{ cast_boolean('automatedflag') }} as automated_flag
+    -- Convert timestamp safely (handles various formats)
+    CASE
+        WHEN TRY_TO_TIMESTAMP_NTZ(ESCALATEDAT) IS NOT NULL 
+            THEN TRY_TO_TIMESTAMP_NTZ(ESCALATEDAT)
+        -- Try alternative format if needed
+        WHEN TRY_TO_TIMESTAMP_NTZ(ESCALATEDAT, 'YYYY-MM-DD HH24:MI:SS') IS NOT NULL
+            THEN TRY_TO_TIMESTAMP_NTZ(ESCALATEDAT, 'YYYY-MM-DD HH24:MI:SS')
+        -- Try DD/MM/YYYY format (common in sample data)
+        WHEN TRY_TO_TIMESTAMP_NTZ(ESCALATEDAT, 'DD/MM/YYYY HH24:MI') IS NOT NULL
+            THEN TRY_TO_TIMESTAMP_NTZ(ESCALATEDAT, 'DD/MM/YYYY HH24:MI')
+        ELSE NULL
+    END AS escalated_at,
 
-from {{ source('northbridge_raw', 'escalation_log') }}
+    {{ cast_boolean('automatedflag') }} AS automated_flag
+
+FROM {{ source('northbridge_raw', 'escalation_log') }}

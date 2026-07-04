@@ -1,4 +1,7 @@
--- Escalated tickets must appear in escalation fact table
+-- ============================================================================
+-- TEST: Escalation Consistency
+-- Fails if escalated tickets don't appear in escalation log
+-- ============================================================================
 
 SELECT t.ticket_id
 FROM {{ ref('fct_tickets') }} t

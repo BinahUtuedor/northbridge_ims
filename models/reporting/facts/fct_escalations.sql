@@ -1,27 +1,37 @@
 -- ============================================================================
--- FACT: Escalations
--- Grain: one row per escalation event
+-- FACT: Escalations (FIXED)
 -- ============================================================================
 
-select
+{{ config(materialized='table') }}
+
+WITH escalations AS (
+    SELECT * FROM {{ ref('stg_escalation_log') }}
+),
+
+agents AS (
+    SELECT 
+        agent_id,
+        full_name
+    FROM {{ ref('stg_agents') }}
+)
+
+SELECT
     e.escalation_id,
     e.ticket_id,
 
-    -- FIX: use correct staging fields (NOT agent_id)
-    e.escalated_from as from_agent_id,
-    e.escalated_to   as to_agent_id,
+    COALESCE(e.escalated_from, 0) AS from_agent_id,
+    COALESCE(e.escalated_to, 0)   AS to_agent_id,
 
     e.escalation_reason,
     e.escalated_at,
 
-    -- join dimensions safely
-    a1.full_name as from_agent_name,
-    a2.full_name as to_agent_name
+    COALESCE(a1.full_name, 'Unknown Agent') AS from_agent_name,
+    COALESCE(a2.full_name, 'Unknown Agent') AS to_agent_name
 
-from {{ ref('stg_escalation_log') }} e
+FROM escalations e
 
-left join {{ ref('stg_agents') }} a1
-    on e.escalated_from = a1.agent_id
+LEFT JOIN agents a1
+    ON e.escalated_from = a1.agent_id
 
-left join {{ ref('stg_agents') }} a2
-    on e.escalated_to = a2.agent_id
+LEFT JOIN agents a2
+    ON e.escalated_to = a2.agent_id

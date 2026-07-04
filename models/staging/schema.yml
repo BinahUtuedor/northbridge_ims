@@ -8,12 +8,43 @@ models:
         tests:
           - unique
           - not_null
+      - name: full_name
+        tests:
+          - not_null
+      - name: team_id
+        tests:
+          - not_null
+      - name: role
+        tests:
+          - not_null
+      - name: is_active
+        tests:
+          - not_null
 
   - name: stg_clients
     columns:
       - name: client_id
         tests:
           - unique
+          - not_null
+      - name: client_name
+        tests:
+          - not_null
+      - name: client_type
+        tests:
+          - not_null
+      - name: contract_tier
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Standard', 'Premium', 'Enterprise']
+                quote: true
+      - name: region
+        tests:
+          - not_null
+      - name: is_active
+        tests:
           - not_null
 
   - name: stg_priority_levels
@@ -22,12 +53,26 @@ models:
         tests:
           - unique
           - not_null
+          - accepted_values:
+              arguments:
+                values: [1, 2, 3, 4]
+                quote: false
+      - name: priority_label
+        tests:
+          - not_null
 
   - name: stg_ticket_categories
     columns:
       - name: category_id
         tests:
           - unique
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [1, 2, 3, 4, 5]
+                quote: false
+      - name: category_name
+        tests:
           - not_null
 
   - name: stg_sla_definitions
@@ -36,12 +81,21 @@ models:
         tests:
           - unique
           - not_null
+      - name: contract_tier
+        tests:
+          - not_null
+      - name: priority_id
+        tests:
+          - not_null
 
   - name: stg_escalation_log
     columns:
       - name: escalation_id
         tests:
           - unique
+          - not_null
+      - name: ticket_id
+        tests:
           - not_null
 
   - name: stg_ticket_audit_log
@@ -50,10 +104,19 @@ models:
         tests:
           - unique
           - not_null
+      - name: ticket_id
+        tests:
+          - not_null
 
   - name: stg_tickets
     columns:
+
       - name: ticket_id
+        tests:
+          - unique
+          - not_null
+
+      - name: ticket_reference
         tests:
           - unique
           - not_null
@@ -64,6 +127,7 @@ models:
               arguments:
                 to: ref('stg_clients')
                 field: client_id
+          - not_null
 
       - name: assigned_agent_id
         tests:
@@ -71,6 +135,7 @@ models:
               arguments:
                 to: ref('stg_agents')
                 field: agent_id
+          - not_null
 
       - name: category_id
         tests:
@@ -78,6 +143,7 @@ models:
               arguments:
                 to: ref('stg_ticket_categories')
                 field: category_id
+          - not_null
 
       - name: priority_id
         tests:
@@ -85,3 +151,31 @@ models:
               arguments:
                 to: ref('stg_priority_levels')
                 field: priority_id
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [1, 2, 3, 4]
+                quote: false
+
+      - name: status
+        tests:
+          - not_null
+
+      - name: sla_breached
+        tests:
+          - not_null
+
+      - name: created_at
+        tests:
+          - not_null
+
+      - name: channel
+        tests:
+          - not_null
+
+      - name: description
+        tests:
+          - not_null
+
+      - name: resolution_notes
+        tests: []  # No tests - can be NULL for open tickets

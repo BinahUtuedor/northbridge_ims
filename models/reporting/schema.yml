@@ -2,12 +2,11 @@ version: 2
 
 models:
 
-  # ============================================================================
+  # =========================
   # DIMENSIONS
-  # ============================================================================
+  # =========================
 
   - name: dim_agents
-    description: "Agent dimension containing workforce attributes and capacity segmentation."
     columns:
       - name: agent_id
         tests:
@@ -15,7 +14,6 @@ models:
           - not_null
 
   - name: dim_clients
-    description: "Client dimension containing contract and commercial attributes."
     columns:
       - name: client_id
         tests:
@@ -23,7 +21,6 @@ models:
           - not_null
 
   - name: dim_priority
-    description: "Ticket priority lookup dimension (P1–P4)."
     columns:
       - name: priority_id
         tests:
@@ -31,7 +28,6 @@ models:
           - not_null
 
   - name: dim_ticket_category
-    description: "Ticket category classification dimension."
     columns:
       - name: category_id
         tests:
@@ -39,7 +35,6 @@ models:
           - not_null
 
   - name: dim_sla
-    description: "SLA rules mapping contract tier and priority to service targets."
     columns:
       - name: sla_id
         tests:
@@ -47,20 +42,19 @@ models:
           - not_null
 
   - name: dim_date
-    description: "Standard calendar dimension with fiscal and reporting attributes."
     columns:
       - name: date_key
         tests:
           - unique
           - not_null
 
-  # ============================================================================
+  # =========================
   # FACT TABLES
-  # ============================================================================
+  # =========================
 
   - name: fct_tickets
-    description: "Core fact table for ticket lifecycle, SLA tracking and operational performance."
     columns:
+
       - name: ticket_id
         tests:
           - unique
@@ -95,7 +89,6 @@ models:
                 field: category_id
 
   - name: fct_ticket_audit
-    description: "Event-level audit log of ticket lifecycle changes."
     columns:
       - name: log_id
         tests:
@@ -103,29 +96,27 @@ models:
           - not_null
 
   - name: fct_escalations
-    description: "Escalation events with operational risk tracking."
     columns:
       - name: escalation_id
         tests:
           - unique
           - not_null
 
-  # ============================================================================
-  # REPORTING MARTS
-  # ============================================================================
+  # =========================
+  # REPORTING TABLES
+  # =========================
 
   - name: rpt_sla_kpis
-    description: "Executive SLA KPI dashboard aggregated by time, priority and contract tier."
     columns:
       - name: total_tickets
         tests:
           - not_null
 
       - name: sla_breach_percentage
-        description: "Percentage of tickets breaching SLA thresholds."
+        tests:
+          - not_null
 
   - name: rpt_agent_performance
-    description: "Agent productivity, SLA compliance, and workload distribution metrics."
     columns:
       - name: agent_id
         tests:
@@ -133,7 +124,6 @@ models:
           - not_null
 
   - name: rpt_client_sla
-    description: "Client-level SLA performance and operational health metrics."
     columns:
       - name: client_id
         tests:
@@ -141,4 +131,7 @@ models:
           - not_null
 
   - name: rpt_ticket_summary
-    description: "Operational ticket summary by time, category, priority and status."
+    columns:
+      - name: ticket_id
+        tests:
+          - not_null

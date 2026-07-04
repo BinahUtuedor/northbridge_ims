@@ -1,16 +1,16 @@
 -- ============================================================================
 -- STAGING: Ticket Categories
--- Standardised reference data for ticket classification
 -- ============================================================================
 
-select
-    categoryid              as category_id,
-    trim(categoryname)     as category_name,
-    defaultpriorityid      as default_priority_id,
+{{ config(
+    materialized='view',
+    schema='staging'
+) }}
 
-    -- FIX: correct column name from RAW = REQUIRESSPECIALIST (double S)
-    {{ cast_boolean('requiresspecialist') }} as requires_specialist,
-
-    trim(description)      as description
-
-from {{ source('northbridge_raw', 'ticket_categories') }}
+SELECT
+    CATEGORYID              AS category_id,
+    TRIM(CATEGORYNAME)      AS category_name,
+    DEFAULTPRIORITYID       AS default_priority_id,
+    {{ cast_boolean('REQUIRESSPECIALIST') }} AS requires_specialist,
+    TRIM(DESCRIPTION)       AS description
+FROM {{ source('northbridge_raw', 'ticket_categories') }}
