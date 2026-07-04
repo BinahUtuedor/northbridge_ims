@@ -47,9 +47,22 @@ s3 = boto3.client(
 # ----------------------------
 # CLEAN CSV (REMOVE BOM + SAVE UTF-8)
 # ----------------------------
+
 def clean_csv(input_path, output_path):
-    df = pd.read_csv(input_path, encoding="utf-8-sig")  # removes BOM safely
-    df.to_csv(output_path, index=False, encoding="utf-8")  # clean UTF-8
+    df = pd.read_csv(input_path, encoding="utf-8-sig")
+
+    # ----------------------------
+    # ONLY FIX: remove fully empty rows
+    # ----------------------------
+    df = df.replace(r'^\s*$', pd.NA, regex=True)
+    df = df.dropna(how="all")
+
+    # reset index (safe, non-transformational)
+    df = df.reset_index(drop=True)
+
+    # write back
+    df.to_csv(output_path, index=False, encoding="utf-8")
+
     return output_path
 
 # ----------------------------
