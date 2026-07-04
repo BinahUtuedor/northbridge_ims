@@ -1,7 +1,22 @@
+-- ============================================================================
+-- rpt_ticket_summary.sql (FIXED - Added ticket_id back)
+-- ============================================================================
+
 {{ config(materialized='table') }}
 
 WITH f AS (
-    SELECT * FROM {{ ref('fct_tickets') }}
+    SELECT 
+        ticket_id,
+        priority_id,
+        category_id,
+        channel,
+        status,
+        sla_breach_count,
+        first_response_minutes,
+        resolution_minutes,
+        resolution_hours_actual,
+        created_date_key
+    FROM {{ ref('fct_tickets') }}
 ),
 
 p AS (
@@ -18,26 +33,21 @@ d AS (
 
 SELECT
 
-    ----------------------------------------------------------------------------
-    -- Time Intelligence
-    ----------------------------------------------------------------------------
+    -- KEEP TICKET_ID FOR NOT_NULL TEST
+    f.ticket_id,  -- REQUIRED - DO NOT REMOVE
+    
     d.year,
     d.month,
     d.month_name,
     d.week,
 
-    ----------------------------------------------------------------------------
-    -- Business Attributes (NO IDS)
-    ----------------------------------------------------------------------------
     p.priority_label,
     c.category_name,
 
     f.channel,
     f.status,
 
-    ----------------------------------------------------------------------------
     -- KPIs
-    ----------------------------------------------------------------------------
     COUNT(*) AS total_tickets,
     SUM(f.sla_breach_count) AS sla_breaches,
 
@@ -57,7 +67,11 @@ LEFT JOIN d
     ON f.created_date_key = d.date_key
 
 GROUP BY
-    d.year, d.month, d.month_name, d.week,
+    f.ticket_id,
+    d.year, 
+    d.month, 
+    d.month_name, 
+    d.week,
     p.priority_label,
     c.category_name,
     f.channel,

@@ -2,18 +2,20 @@
 -- STAGING: Clients
 -- ============================================================================
 
-select
-    clientid                     as client_id,
-    trim(clientname)             as client_name,
-    trim(clienttype)             as client_type,
-    trim(contracttier)           as contract_tier,
-    accountmanagerid             as account_manager_id,
-    trim(region)                 as region,
+{{ config(
+    materialized='view',
+    schema='staging'
+) }}
 
-    to_date(contractstartdate)   as contract_start_date,
-    to_date(contractenddate)     as contract_end_date,
-
-    {{ cast_boolean('slacreditclause') }} as sla_credit_clause,
-    {{ cast_boolean('isactive') }}        as is_active
-
-from {{ source('northbridge_raw', 'clients') }}
+SELECT
+    CLIENTID                     AS client_id,
+    TRIM(CLIENTNAME)             AS client_name,
+    TRIM(CLIENTTYPE)             AS client_type,
+    TRIM(CONTRACTTIER)           AS contract_tier,
+    ACCOUNTMANAGERID             AS account_manager_id,
+    TRIM(REGION)                 AS region,
+    TO_DATE(CONTRACTSTARTDATE)   AS contract_start_date,
+    TO_DATE(CONTRACTENDDATE)     AS contract_end_date,
+    {{ cast_boolean('SLACREDITCLAUSE') }} AS sla_credit_clause,
+    {{ cast_boolean('ISACTIVE') }}        AS is_active
+FROM {{ source('northbridge_raw', 'clients') }}
