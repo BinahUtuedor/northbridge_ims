@@ -47,3 +47,4 @@ logs/
 # AIRBYTE (if running locally later)
 # ----------------------------
 .airbyte/
+dbt_internal_packages/
