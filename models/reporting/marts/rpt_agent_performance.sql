@@ -95,7 +95,7 @@ SELECT
         ELSE 'Inactive'
     END AS agent_status
 
-FROM a   -- FIX: dimension-first join (critical)
+FROM a   -- Dimension-first join (critical)
 
 LEFT JOIN f
     ON f.agent_id = a.agent_id
