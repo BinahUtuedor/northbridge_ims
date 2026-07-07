@@ -33,8 +33,7 @@ d AS (
 
 SELECT
 
-    -- KEEP TICKET_ID FOR NOT_NULL TEST
-    f.ticket_id,  -- REQUIRED - DO NOT REMOVE
+    f.ticket_id, 
     
     d.year,
     d.month,
