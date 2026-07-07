@@ -1,5 +1,5 @@
 -- ============================================================================
--- FACT: Tickets (FIXED - Uses stg_escalation_log, not fct_escalations)
+-- FACT: Tickets (Uses stg_escalation_log, not fct_escalations)
 -- ============================================================================
 
 {{ config(materialized='table') }}
