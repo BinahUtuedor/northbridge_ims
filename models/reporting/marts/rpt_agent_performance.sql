@@ -1,5 +1,5 @@
 -- ============================================================================
--- REPORTING: Agent Performance (FIXED JOIN DIRECTION)
+-- REPORTING: Agent Performance 
 -- ============================================================================
 
 {{ config(materialized='table') }}
